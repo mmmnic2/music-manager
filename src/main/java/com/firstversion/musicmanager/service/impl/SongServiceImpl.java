@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,19 +35,20 @@ public class SongServiceImpl implements SongService {
     @Autowired
     CloudinaryService cloudinaryService;
 
+
     @Override
     public SongResponse createSong(SongRequest request) throws IOException {
         Author foundAuthor = authorRepository.findById(request.getAuthorId()).orElseThrow(() -> new NotFoundException("Author not found."));
         Genre foundGenre = genreRepository.findById(request.getGenreId()).orElseThrow(() -> new NotFoundException("Genre not found."));
         String imageUrl = null;
         if (request.getImage() != null) {
-            Map<String, Objects> result = cloudinaryService.uploadImage(request.getImage());
-            imageUrl = result.get("url").toString();
+            Map<String, String> result = cloudinaryService.uploadImage(request.getImage());
+            imageUrl = result.get("url");
         }
         String videoUrl = null;
-        if (request.getImage() != null) {
-            Map<String, Objects> result = cloudinaryService.uploadVideo(request.getSrc());
-            videoUrl = result.get("url").toString();
+        if (request.getSrc() != null) {
+            Map<String, String> result = cloudinaryService.uploadVideo(request.getSrc());
+            videoUrl = result.get("url");
         }
         Song song = new Song();
         song.setSongName(request.getSongName());
@@ -59,32 +61,53 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public SongResponse saveSong(SongRequest request) throws IOException {
-        Author foundAuthor = authorRepository.findById(request.getAuthorId()).orElseThrow(() -> new NotFoundException("Author not found."));
-        Genre foundGenre = genreRepository.findById(request.getGenreId()).orElseThrow(() -> new NotFoundException("Genre not found."));
-        Song song = request.getSongId() != null?
-                songRepository.findById(request.getSongId()).orElseThrow(() -> new NotFoundException("Song not found."))
-                        : new Song();
+    public String uploadImage(MultipartFile image) throws IOException {
         String imageUrl = null;
-        if (request.getImage() != null) {
-            Map<String, Objects> result = cloudinaryService.uploadImage(request.getImage());
+        if (image != null) {
+            Map<String, Objects> result = cloudinaryService.uploadImage(image);
             imageUrl = result.get("url").toString();
         }
+        return imageUrl;
+    }
+
+    @Override
+    public String uploadSrc(MultipartFile src) throws IOException {
         String videoUrl = null;
-        if (request.getImage() != null) {
-            Map<String, Objects> result = cloudinaryService.uploadVideo(request.getSrc());
+        if (src != null) {
+            Map<String, Objects> result = cloudinaryService.uploadVideo(src);
             videoUrl = result.get("url").toString();
         }
-        if (request.getSongName() == null && request.getSongId() == null) {
-            throw new IllegalArgumentException("Song name cannot be null.");
-        }
-        song.setSongName(request.getSongName() != null ? request.getSongName() : song.getSongName());
-        song.setAuthor(foundAuthor);
-        song.setGenre(foundGenre);
-        if (imageUrl != null) song.setImage(imageUrl);
-        if (videoUrl != null) song.setSrc(videoUrl);
-        Song savedSong = songRepository.save(song);
-        return savedSong.toSongResponse();
+        return videoUrl;
+    }
+
+    @Override
+    public SongResponse saveSong(SongRequest request) throws IOException {
+//        Author foundAuthor = authorRepository.findById(request.getAuthorId()).orElseThrow(() -> new NotFoundException("Author not found."));
+//        Genre foundGenre = genreRepository.findById(request.getGenreId()).orElseThrow(() -> new NotFoundException("Genre not found."));
+//        Song song = request.getSongId() != null ?
+//                songRepository.findById(request.getSongId()).orElseThrow(() -> new NotFoundException("Song not found."))
+//                : new Song();
+//        String imageUrl = null;
+//        if (request.getImage() != null) {
+//            Map<String, Objects> result = cloudinaryService.uploadImage(request.getImage());
+//            imageUrl = result.get("url").toString();
+//        }
+//        String videoUrl = null;
+//        if (request.getImage() != null) {
+//            Map<String, Objects> result = cloudinaryService.uploadVideo(request.getSrc());
+//            videoUrl = result.get("url").toString();
+//        }
+//        if (request.getSongName() == null && request.getSongId() == null) {
+//            throw new IllegalArgumentException("Song name cannot be null.");
+//        }
+//        song.setSongName(request.getSongName() != null ? request.getSongName() : song.getSongName());
+//        song.setAuthor(foundAuthor);
+//        song.setGenre(foundGenre);
+//        if (imageUrl != null) song.setImage(imageUrl);
+//        if (videoUrl != null) song.setSrc(videoUrl);
+//        Song savedSong = songRepository.save(song);
+//        return savedSong.toSongResponse();
+        return null;
     }
 
     @Override

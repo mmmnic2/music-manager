@@ -5,13 +5,19 @@ import com.firstversion.musicmanager.dto.response.ResponseObject;
 import com.firstversion.musicmanager.dto.response.SongResponse;
 import com.firstversion.musicmanager.model.entity.Song;
 import com.firstversion.musicmanager.service.SongService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,9 +42,20 @@ public class SongController {
         );
     }
 
-    @GetMapping("/create-new-song")
-    public ResponseEntity<ResponseObject> createSong(@RequestBody SongRequest songRequest) throws IOException {
-        SongResponse response = songService.saveSong(songRequest);
+    @PostMapping(value = "/create-new-song", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Upload a file")
+    public ResponseEntity<ResponseObject> createSong(@RequestParam("songName") String songName,
+                                                     @RequestParam("genreId") Long genreId,
+                                                     @RequestParam("authorId") Long authorId,
+                                                     @RequestParam("image") MultipartFile image,
+                                                     @RequestParam("src") MultipartFile src) throws IOException {
+        SongRequest request = new SongRequest();
+        request.setSongName(songName);
+        request.setAuthorId(authorId);
+        request.setGenreId(genreId);
+        request.setImage(image);
+        request.setSrc(src);
+        SongResponse response = songService.createSong(request);
         return ResponseEntity.ok(
                 new ResponseObject(HttpStatus.OK.value(), "Create new song successful.", response)
         );

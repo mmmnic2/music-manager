@@ -23,7 +23,7 @@ public class Song extends BaseEntity {
     private String image;
     private String src;
     @ManyToOne
-    @JoinColumn(name = "genre_id")
+    @JoinColumn(name = "genre_id", nullable = false)
     private Genre genre;
     @ManyToOne
     @JoinColumn(name = "author_id")

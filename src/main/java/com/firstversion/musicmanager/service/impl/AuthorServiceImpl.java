@@ -1,5 +1,6 @@
 package com.firstversion.musicmanager.service.impl;
 
+import com.firstversion.musicmanager.dto.request.AuthorRequest;
 import com.firstversion.musicmanager.dto.response.AuthorResponse;
 import com.firstversion.musicmanager.exception.NotFoundException;
 import com.firstversion.musicmanager.model.entity.Author;
@@ -16,12 +17,12 @@ public class AuthorServiceImpl implements AuthorService {
     AuthorRepository authorRepository;
 
     @Override
-    public AuthorResponse createAuthor(AuthorResponse authorResponse) {
-        if (authorResponse.getAuthorName() == null || authorResponse.getAuthorName().trim().isEmpty()) {
+    public AuthorResponse createAuthor(AuthorRequest authorRequest) {
+        if (authorRequest.getAuthorName() == null || authorRequest.getAuthorName().trim().isEmpty()) {
             throw new RuntimeException("Author's name is not valid.");
         }
         Author author = new Author();
-        author.setAuthorName(authorResponse.getAuthorName());
+        author.setAuthorName(authorRequest.getAuthorName());
         Author savedAuthor = authorRepository.save(author);
         return savedAuthor.toAuthorResponse();
     }

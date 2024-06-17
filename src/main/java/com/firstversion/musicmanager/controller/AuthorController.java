@@ -1,5 +1,6 @@
 package com.firstversion.musicmanager.controller;
 
+import com.firstversion.musicmanager.dto.request.AuthorRequest;
 import com.firstversion.musicmanager.dto.response.AuthorResponse;
 import com.firstversion.musicmanager.dto.response.ResponseObject;
 import com.firstversion.musicmanager.service.AuthorService;
@@ -17,8 +18,8 @@ public class AuthorController {
     AuthorService authorService;
 
     @PostMapping("/create-new-author")
-    public ResponseEntity<ResponseObject> createAuthor(@RequestBody AuthorResponse authorResponse) {
-        AuthorResponse response = authorService.createAuthor(authorResponse);
+    public ResponseEntity<ResponseObject> createAuthor(@RequestBody AuthorRequest authorRequest) {
+        AuthorResponse response = authorService.createAuthor(authorRequest);
         if (response == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new ResponseObject(HttpStatus.BAD_REQUEST.value(), "Unable to create new author", null)

@@ -30,6 +30,7 @@ public class User extends BaseEntity implements UserDetails {
     private String password;
     @Column(nullable = false)
     private String username;
+    @Column(nullable = false)
     private Role role;
 
     @Override
