@@ -1,6 +1,6 @@
 package com.firstversion.musicmanager.dto.response;
 
-import com.firstversion.musicmanager.model.entity.Role;
+import com.firstversion.musicmanager.model.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

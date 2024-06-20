@@ -1,26 +1,25 @@
 package com.firstversion.musicmanager.controller;
 
-import com.firstversion.musicmanager.dto.response.AuthorResponse;
+import com.firstversion.musicmanager.dto.request.CreateGenreRequest;
 import com.firstversion.musicmanager.dto.response.GenreResponse;
 import com.firstversion.musicmanager.dto.response.ResponseObject;
 import com.firstversion.musicmanager.service.GenreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/genre")
+@RequestMapping("/api/v1/genres")
 public class GenreController {
     @Autowired
     GenreService genreService;
 
     @PostMapping("/create-new-genre")
-    public ResponseEntity<?> createGenre(@RequestBody GenreResponse genreResponse) {
-        GenreResponse response = genreService.createGenre(genreResponse);
+    public ResponseEntity<?> createGenre(@RequestBody CreateGenreRequest request) {
+        GenreResponse response = genreService.createGenre(request);
         if (response == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new ResponseObject(HttpStatus.BAD_REQUEST.value(), "Unable to create new genre", null)

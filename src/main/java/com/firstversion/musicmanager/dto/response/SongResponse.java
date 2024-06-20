@@ -1,8 +1,6 @@
 package com.firstversion.musicmanager.dto.response;
 
 import com.firstversion.musicmanager.dto.BaseDTO;
-import com.firstversion.musicmanager.model.entity.Author;
-import com.firstversion.musicmanager.model.entity.Genre;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,5 +16,4 @@ public class SongResponse extends BaseDTO {
     private String image;
     private String src;
     private GenreResponse genre;
-    private AuthorResponse author;
 }

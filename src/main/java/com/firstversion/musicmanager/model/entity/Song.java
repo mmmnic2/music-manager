@@ -25,9 +25,7 @@ public class Song extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "genre_id", nullable = false)
     private Genre genre;
-    @ManyToOne
-    @JoinColumn(name = "author_id")
-    private Author author;
+
 
     public SongResponse toSongResponse() {
         SongResponse response = new SongResponse();
@@ -38,7 +36,6 @@ public class Song extends BaseEntity {
         response.setCreateDate(this.getCreateDate());
         response.setModifiedDate(this.getModifiedDate());
         response.setGenre(this.getGenre().toGenreResponse());
-        response.setAuthor(this.getAuthor().toAuthorResponse());
         return response;
     }
 

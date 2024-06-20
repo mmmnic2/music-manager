@@ -11,7 +11,7 @@
     <groupId>com.firstversion</groupId>
     <artifactId>musicmanager</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>socialmedia</name>
+    <name>music manager</name>
     <description>Demo project social media</description>
     <properties>
         <java.version>17</java.version>
@@ -83,6 +83,7 @@
     </dependencies>
 
     <build>
+
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -1,5 +1,6 @@
 package com.firstversion.musicmanager.service.impl;
 
+import com.firstversion.musicmanager.dto.request.CreateGenreRequest;
 import com.firstversion.musicmanager.dto.response.GenreResponse;
 import com.firstversion.musicmanager.exception.AlreadyExistException;
 import com.firstversion.musicmanager.exception.NotFoundException;
@@ -17,15 +18,15 @@ public class GenreServiceImpl implements GenreService {
     GenreRepository genreRepository;
 
     @Override
-    public GenreResponse createGenre(GenreResponse genreResponse) {
-        if (genreResponse.getGenreName() == null || genreResponse.getGenreName().trim().isEmpty()) {
+    public GenreResponse createGenre(CreateGenreRequest request) {
+        if (request.getGenreName() == null || request.getGenreName().trim().isEmpty()) {
             throw new RuntimeException("Genre name is not valid.");
         }
-        if (genreRepository.checkExistByName(genreResponse.getGenreName()) != null) {
+        if (genreRepository.checkExistByName(request.getGenreName()) != null) {
             throw new AlreadyExistException("Genre has already existed.");
         }
         Genre genre = new Genre();
-        genre.setGenreName(genreResponse.getGenreName());
+        genre.setGenreName(request.getGenreName());
         Genre savedGenre = genreRepository.save(genre);
         return savedGenre.toGenreResponse();
     }

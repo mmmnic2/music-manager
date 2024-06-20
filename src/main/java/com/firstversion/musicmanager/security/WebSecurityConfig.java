@@ -5,6 +5,7 @@ import com.firstversion.musicmanager.security.jwt.JwtAuthEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -12,11 +13,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -25,6 +28,10 @@ public class WebSecurityConfig {
     UserDetailsService userDetailsService;
     @Autowired
     JwtAuthEntryPoint jwtAuthEntryPoint;
+    @Autowired
+    LogoutHandler logoutHandler;
+    String[] song_genre_endpoint = {"/api/v1/songs/**", "/api/v1/genres/**"};
+    String[] swagger_ui_endpoint = {"/swagger-ui/**"};
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -52,16 +59,24 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers("/api/v1/**").authenticated()
+                        authorize
+                                .requestMatchers(HttpMethod.GET, song_genre_endpoint).permitAll()
+                                .requestMatchers(song_genre_endpoint).hasRole("ADMIN")
                                 .anyRequest().permitAll())
                 // nhà cung cấp xác thực bằng cách sử dụng method authenticationProvider()
                 .authenticationProvider(authenticationProvider())
                 // Thêm filter xác thực dựa trên JWT trước UsernamePasswordAuthenticationFilter
                 .addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class)
-                .csrf(AbstractHttpConfigurer::disable);
+                .logout(logout ->
+                        logout
+                                .logoutUrl("/api/auth/logout")
+                                .addLogoutHandler(logoutHandler)
+                                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()));
+
         return http.build();
     }
 }

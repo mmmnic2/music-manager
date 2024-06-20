@@ -6,7 +6,7 @@ import com.firstversion.musicmanager.dto.response.ResponseObject;
 import com.firstversion.musicmanager.dto.response.AuthenticationResponse;
 import com.firstversion.musicmanager.dto.response.RegisterResponse;
 import com.firstversion.musicmanager.exception.AlreadyExistException;
-import com.firstversion.musicmanager.model.entity.Role;
+import com.firstversion.musicmanager.model.enums.Role;
 import com.firstversion.musicmanager.service.AuthenticationService;
 import com.firstversion.musicmanager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
     @Autowired
     UserService userService;

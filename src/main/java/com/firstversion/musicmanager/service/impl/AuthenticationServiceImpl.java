@@ -7,7 +7,7 @@ import com.firstversion.musicmanager.dto.response.RegisterResponse;
 import com.firstversion.musicmanager.exception.AlreadyExistException;
 import com.firstversion.musicmanager.exception.NotFoundException;
 import com.firstversion.musicmanager.exception.UserNotAuthorizedException;
-import com.firstversion.musicmanager.model.entity.Role;
+import com.firstversion.musicmanager.model.enums.Role;
 import com.firstversion.musicmanager.model.entity.User;
 import com.firstversion.musicmanager.repository.UserRepository;
 import com.firstversion.musicmanager.security.jwt.JwtService;
@@ -49,7 +49,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private RegisterResponse toRegisterResponse(User user) {
         return RegisterResponse.builder()
-                .role(Role.valueOf(user.getRole().name()))
+                .role(user.getRole())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .username(user.getUsername())

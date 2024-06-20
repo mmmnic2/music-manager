@@ -14,5 +14,4 @@ public class SongRequest {
     private MultipartFile image;
     private MultipartFile src;
     private Long genreId;
-    private Long authorId;
 }

@@ -1,6 +1,7 @@
 package com.firstversion.musicmanager.controller;
 
 import com.firstversion.musicmanager.dto.request.SongRequest;
+import com.firstversion.musicmanager.dto.request.UpdateSongRequest;
 import com.firstversion.musicmanager.dto.response.ResponseObject;
 import com.firstversion.musicmanager.dto.response.SongResponse;
 import com.firstversion.musicmanager.model.entity.Song;
@@ -36,22 +37,19 @@ public class SongController {
         Page<SongResponse> responses;
         if (genreId != null) {
             responses = songService.getSongsByGenre(genreId, pageable);
-        } else responses = songService.getSongs(pageable);
+        } else responses = songService.getAllSongs(pageable);
         return ResponseEntity.ok(
                 new ResponseObject(HttpStatus.OK.value(), "Get all songs successful.", responses)
         );
     }
 
     @PostMapping(value = "/create-new-song", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Upload a file")
     public ResponseEntity<ResponseObject> createSong(@RequestParam("songName") String songName,
                                                      @RequestParam("genreId") Long genreId,
-                                                     @RequestParam("authorId") Long authorId,
-                                                     @RequestParam("image") MultipartFile image,
-                                                     @RequestParam("src") MultipartFile src) throws IOException {
+                                                     @RequestPart(value = "image", required = false) MultipartFile image,
+                                                     @RequestPart("src") MultipartFile src) throws IOException {
         SongRequest request = new SongRequest();
         request.setSongName(songName);
-        request.setAuthorId(authorId);
         request.setGenreId(genreId);
         request.setImage(image);
         request.setSrc(src);
@@ -61,12 +59,18 @@ public class SongController {
         );
     }
 
-    @GetMapping("update-song")
-    public ResponseEntity<ResponseObject> updateSong(@RequestBody SongRequest songRequest) throws IOException {
-        SongResponse response = songService.saveSong(songRequest);
-        return ResponseEntity.ok(
-                new ResponseObject(HttpStatus.OK.value(), "Update song successful.", response)
-        );
+    @PostMapping("/update-song/{songId}")
+    public ResponseEntity<ResponseObject> updateSong(@PathVariable Long songId,
+                                                     @RequestBody UpdateSongRequest songRequest) {
+        SongResponse response = songService.updateSong(songId, songRequest);
+        if (response != null) {
+            return ResponseEntity.ok(
+                    new ResponseObject(HttpStatus.OK.value(), "Update song successful.", response)
+            );
+        } else
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ResponseObject(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Unable to update song.", null)
+            );
     }
 
     @DeleteMapping("/delete")
@@ -77,6 +81,19 @@ public class SongController {
                     new ResponseObject(HttpStatus.OK.value(), "Delete songIds list successful", new ResponseObject())
             );
         else
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ResponseObject(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Unable to delete songIds list.", null)
+            );
+    }
+
+    @GetMapping("/{songId}")
+    public ResponseEntity<ResponseObject> getSongById(@PathVariable Long songId) {
+        SongResponse response = songService.getSongById(songId);
+        if (response != null) {
+            return ResponseEntity.ok(
+                    new ResponseObject(HttpStatus.OK.value(), "Get song successful.", response)
+            );
+        } else
             return ResponseEntity.ok(
                     new ResponseObject(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Unable to delete songIds list.", null)
             );
