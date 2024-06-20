@@ -17,7 +17,7 @@ RUN ./mvnw package
 FROM openjdk:17-jdk-slim
 WORKDIR app
 COPY --from=build target/*.jar app.jar
-ENTRYPOINT ["java", "-jar", "demo.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
 #FROM openjdk:17
 ##ENV PORT 8080
 ##EXPOSE $PORT
