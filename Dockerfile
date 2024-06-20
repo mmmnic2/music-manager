@@ -6,7 +6,7 @@
 #ENTRYPOINT ["java", "-jar", "app.jar"]
 
 FROM openjdk:17-jdk-slim AS build
-
+RUN chmod +x mvnw
 COPY pom.xml mvnw ./
 COPY .mvn .mvn
 RUN ./mvnw dependency:resolve
@@ -18,6 +18,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR app
 COPY --from=build target/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
 #FROM openjdk:17
 ##ENV PORT 8080
 ##EXPOSE $PORT
