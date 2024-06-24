@@ -20,4 +20,9 @@ public interface SongRepository extends JpaRepository<Song, Long> {
             , countQuery = "Select count(*) from songs where lower(song_name) like lower(concat('%', :name, '%'))"
             , nativeQuery = true)
     Page<Song> findByName(String name, Pageable pageable);
+
+    @Query(value = "Select * from songs where lower(song_name) like lower(concat('%', :name, '%')) and genre_id=:genreId"
+            , countQuery = "Select count(*) from songs where lower(song_name) like lower(concat('%', :name, '%')) and genre_id=:genreId"
+            , nativeQuery = true)
+    Page<Song> findByNameAndGenre(String name, Long genreId, Pageable pageable);
 }

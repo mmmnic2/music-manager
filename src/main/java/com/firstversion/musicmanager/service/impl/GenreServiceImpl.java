@@ -42,6 +42,12 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
+    public GenreResponse getById(Long genreId) {
+        Genre foundGenre = genreRepository.findById(genreId).orElseThrow(()-> new NotFoundException("Genre not found."));
+        return foundGenre.toGenreResponse();
+    }
+
+    @Override
     public List<GenreResponse> getAllGenres() {
         List<Genre> genres = genreRepository.findAll();
         if (genres.isEmpty()) return List.of();

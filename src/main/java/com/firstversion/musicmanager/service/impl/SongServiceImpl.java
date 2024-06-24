@@ -89,7 +89,10 @@ public class SongServiceImpl implements SongService {
         }
         List<Song> songList = songRepository.findAllById(songIds);
         if (songList.isEmpty()) throw new NotFoundException("Song not found.");
-        songRepository.deleteAll(songList);
+//        songRepository.deleteAll(songList);
+        for (Song song : songList) {
+
+        }
         return true;
     }
 
@@ -109,6 +112,11 @@ public class SongServiceImpl implements SongService {
     @Override
     public Page<SongResponse> filterSongByName(Pageable pageable, String name) {
         return songRepository.findByName(name, pageable).map(Song::toSongResponse);
+    }
+
+    @Override
+    public Page<SongResponse> filterSongByGenreAndName(Long genreId, String name, Pageable pageable) {
+        return songRepository.findByNameAndGenre(name, genreId, pageable).map(Song::toSongResponse);
     }
 
     private Page<SongResponse> convertToSongResponse(Page<Song> songPage) {

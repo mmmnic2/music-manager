@@ -28,4 +28,6 @@ public interface SongService {
     Page<SongResponse> getSongsByGenre(Long genreId, Pageable pageable);
 
     Page<SongResponse> filterSongByName(Pageable pageable, String name);
+
+    Page<SongResponse> filterSongByGenreAndName(Long genreId, String name, Pageable pageable);
 }

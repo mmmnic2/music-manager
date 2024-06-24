@@ -31,8 +31,18 @@ public class CloudinaryService {
                         "resource_type", "video"
                 ));
     }
-
-    public Map delete(String publicId) throws IOException {
-        return cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+    private String extractPublicId(String fileUrl) {
+        String[] parts = fileUrl.split("/");
+        String publicIdWithFormat = parts[parts.length - 1];
+        return publicIdWithFormat.split("\\.")[0];
+    }
+    public void deleteFile(String fileUrl) {
+        try {
+            String publicId = extractPublicId(fileUrl);
+            Map result = cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to delete file from Cloudinary: " + fileUrl);
+        }
     }
 }

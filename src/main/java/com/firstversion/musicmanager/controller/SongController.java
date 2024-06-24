@@ -32,12 +32,21 @@ public class SongController {
     @GetMapping
     public ResponseEntity<ResponseObject> getSongs(@RequestParam(defaultValue = "0") int page,
                                                    @RequestParam(defaultValue = "5") int size,
-                                                   @RequestParam(required = false) Long genreId) {
+                                                   @RequestParam(required = false) Long genreId,
+                                                   @RequestParam(required = false) String name) {
         Pageable pageable = PageRequest.of(page, size);
         Page<SongResponse> responses;
         if (genreId != null) {
-            responses = songService.getSongsByGenre(genreId, pageable);
-        } else responses = songService.getAllSongs(pageable);
+            if (name != null)
+                responses = songService.filterSongByGenreAndName(genreId, name, pageable);
+            else
+                responses = songService.getSongsByGenre(genreId, pageable);
+        } else {
+            if (name != null)
+                responses = songService.filterSongByName(pageable, name);
+            else
+                responses = songService.getAllSongs(pageable);
+        }
         return ResponseEntity.ok(
                 new ResponseObject(HttpStatus.OK.value(), "Get all songs successful.", responses)
         );
@@ -76,7 +85,7 @@ public class SongController {
     @DeleteMapping("/delete")
     public ResponseEntity<ResponseObject> deleteSongList(@RequestBody List<Long> songIds) {
         boolean isDeleted = songService.deleteSongs(songIds);
-        if (isDeleted == true)
+        if (isDeleted)
             return ResponseEntity.ok(
                     new ResponseObject(HttpStatus.OK.value(), "Delete songIds list successful", new ResponseObject())
             );
