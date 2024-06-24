@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 public class SongServiceImpl implements SongService {
@@ -50,7 +49,7 @@ public class SongServiceImpl implements SongService {
     public String uploadImage(MultipartFile image) throws IOException {
         String imageUrl = null;
         if (image != null) {
-            Map<String, Objects> result = cloudinaryService.uploadImage(image);
+            Map<String, Object> result = cloudinaryService.uploadImage(image);
             imageUrl = result.get("url").toString();
         }
         return imageUrl;
@@ -60,7 +59,7 @@ public class SongServiceImpl implements SongService {
     public String uploadSrc(MultipartFile src) throws IOException {
         String videoUrl = null;
         if (src != null) {
-            Map<String, Objects> result = cloudinaryService.uploadVideo(src);
+            Map<String, Object> result = cloudinaryService.uploadVideo(src);
             videoUrl = result.get("url").toString();
         }
         return videoUrl;
@@ -75,7 +74,6 @@ public class SongServiceImpl implements SongService {
         Song savedSong = songRepository.save(foundSong);
         return savedSong.toSongResponse();
     }
-
 
 
     @Override
@@ -106,6 +104,11 @@ public class SongServiceImpl implements SongService {
     @Override
     public Page<SongResponse> getSongsByGenre(Long genreId, Pageable pageable) {
         return songRepository.findByGenre(genreId, pageable).map(Song::toSongResponse);
+    }
+
+    @Override
+    public Page<SongResponse> filterSongByName(Pageable pageable, String name) {
+        return songRepository.findByName(name, pageable).map(Song::toSongResponse);
     }
 
     private Page<SongResponse> convertToSongResponse(Page<Song> songPage) {

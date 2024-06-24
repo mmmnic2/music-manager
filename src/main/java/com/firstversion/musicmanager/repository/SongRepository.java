@@ -15,4 +15,9 @@ public interface SongRepository extends JpaRepository<Song, Long> {
     @Query(value = "Select * from songs where genre_id=:genreId",
             countQuery = "Select count(*) from songs where genre_id=genreId", nativeQuery = true)
     Page<Song> findByGenre(Long genreId, Pageable pageable);
+
+    @Query(value = "Select * from songs where lower(song_name) like lower(concat('%', :name, '%'))"
+            , countQuery = "Select count(*) from songs where lower(song_name) like lower(concat('%', :name, '%'))"
+            , nativeQuery = true)
+    Page<Song> findByName(String name, Pageable pageable);
 }

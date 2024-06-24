@@ -26,4 +26,6 @@ public interface SongService {
     Page<SongResponse> getAllSongs(Pageable pageable);
 
     Page<SongResponse> getSongsByGenre(Long genreId, Pageable pageable);
+
+    Page<SongResponse> filterSongByName(Pageable pageable, String name);
 }
