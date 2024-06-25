@@ -15,6 +15,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class MyWebMvcConfigurer {
+    private static final long MAX_AGE_SECS = 3600; // 1 hour
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
@@ -22,9 +23,9 @@ public class MyWebMvcConfigurer {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Áp dụng cho tất cả các endpoint
                         .allowedOrigins("*") // Cho phép từ tên miền này
-                        .allowedMethods("GET", "POST", "PUT", "DELETE") // Các phương thức được phép
+                        .allowedMethods("HEAD", "OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE")// Các phương thức được phép
                         .allowedHeaders("*") // Cho phép tất cả các headers
-                        .allowCredentials(true); // Cho phép gửi thông tin xác thực (cookies)
+                        .maxAge(MAX_AGE_SECS);
             }
         };
     }
