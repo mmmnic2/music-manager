@@ -21,7 +21,7 @@ public class MyWebMvcConfigurer {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Áp dụng cho tất cả các endpoint
-                        .allowedOrigins("https://example.com") // Cho phép từ tên miền này
+                        .allowedOrigins("*") // Cho phép từ tên miền này
                         .allowedMethods("GET", "POST", "PUT", "DELETE") // Các phương thức được phép
                         .allowedHeaders("*") // Cho phép tất cả các headers
                         .allowCredentials(true); // Cho phép gửi thông tin xác thực (cookies)
