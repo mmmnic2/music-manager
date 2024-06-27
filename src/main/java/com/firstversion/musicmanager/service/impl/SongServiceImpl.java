@@ -89,10 +89,7 @@ public class SongServiceImpl implements SongService {
         }
         List<Song> songList = songRepository.findAllById(songIds);
         if (songList.isEmpty()) throw new NotFoundException("Song not found.");
-//        songRepository.deleteAll(songList);
-        for (Song song : songList) {
-
-        }
+        songRepository.deleteAll(songList);
         return true;
     }
 
